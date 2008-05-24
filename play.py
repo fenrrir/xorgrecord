@@ -7,7 +7,10 @@ import Xlib.ext.xtest
 import sys
 from time import sleep
 import record
-import gtk
+
+class FileFormatError(Exception):
+    pass
+
 
 display = Xlib.display.Display()
 
@@ -49,7 +52,7 @@ def stop_events():
     global _global_stop 
     _global_stop = True
 
-def play_events():
+def play_events(error_callback=None):
     global _global_stop
 
     functions = {}
@@ -70,8 +73,7 @@ def play_events():
         try:
             functions[command](*args)
         except KeyError, e:
-            dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Xrecord: File Format Error")
-            dialog.run()
-            dialog.destroy()
-
-
+            if not error_callback:
+                raise FileFormatError()
+            else:
+                error_callback()
