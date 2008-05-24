@@ -48,7 +48,9 @@ class App(object):
 
     def menu_item_callback(self, widget, item):
         if item ==  "SRR":
-            record_events()
+            gtk.gdk.threads_init()
+            thread.start_new_thread(record_events, ())
+            gtk.gdk.threads_leave()
         elif item == "STR":
             stop_record()
         elif item == "SRE":
