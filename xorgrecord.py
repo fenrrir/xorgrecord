@@ -163,13 +163,13 @@ class App(object):
 
     def show_about(self):
         self.about = gtk.AboutDialog()
-        self.about.set_name("Xrecord")
+        self.about.set_name("XorgRecord")
         self.about.set_version("0.1")
-        self.about.set_comments("Grava e reproduz eventos do X")
+        self.about.set_comments("Grava e reproduz eventos do Xorg")
         self.about.set_copyright("Copyright (C) 2008 Rodrigo Pinheiro Marques de Araujo")
         self.about.set_authors(["Rodrigo Pinheiro Marques de Araujo"])
         self.about.set_license(license)
-        self.about.set_program_name("Xrecord")
+        self.about.set_program_name("XorgRecord")
         self.about.set_website("http://linil.wordpress.com")
         self.about.run()
         self.about.destroy()
@@ -254,7 +254,7 @@ class App(object):
         self.menu.popup(None, None, gtk.status_icon_position_menu, button, ctime, widget)
 
     def run(self):
-        pynotify.init("Xrecord")
+        pynotify.init("XorgRecord")
         gtk.main()
 
 
