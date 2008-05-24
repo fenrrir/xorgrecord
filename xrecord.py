@@ -119,7 +119,6 @@ class App(object):
 
 
     def show_notify_error(self):
-        gtk.gdk.threads_init()
         notification = pynotify.Notification("Bad file formart", 
                                              ("File %s contains no valid format.\n" + 
                                              "Please, load another file.") % self.file_load, "stock_stop" )
