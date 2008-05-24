@@ -42,17 +42,17 @@ record_dpy = display.Display()
 
 buffer = []
 
-global_time = None
+_global_time = None
 _global_stop = False
 _global_ctx = None
 
 def insert_sleep():
-    global global_time
-    if not global_time:
-        global_time = time()
+    global _global_time
+    if not _global_time:
+        _global_time = time()
     current = time()
-    buffer.append("Sleep %s" % (current - global_time) )
-    global_time = current
+    buffer.append("Sleep %s" % (current - _global_time) )
+    _global_time = current
 
 
 
@@ -132,7 +132,10 @@ def record_callback(reply):
 
 
 def record_events():
-    global _global_ctx
+    global _global_ctx, buffer, _global_time
+    _global_time = None
+    buffer = []
+    print "na thread"
     # Create a recording context; we only want key and mouse events
     _global_ctx = record_dpy.record_create_context(
             0,
