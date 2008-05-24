@@ -67,7 +67,7 @@ class App(object):
             stop_record()
         elif item == "SRE":
             gtk.gdk.threads_init()
-            play_events()
+            thread.start_new_thread(play_events, ())
             gtk.gdk.threads_leave()
         elif item == "STE":
             stop_events()
