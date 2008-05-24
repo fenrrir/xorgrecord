@@ -7,6 +7,7 @@ import Xlib.ext.xtest
 import sys
 from time import sleep
 import record
+import gtk
 
 display = Xlib.display.Display()
 
@@ -69,6 +70,8 @@ def play_events():
         try:
             functions[command](*args)
         except KeyError, e:
-            print "Command not found %s" % command
+            dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Xrecord: File Format Error")
+            dialog.run()
+            dialog.destroy()
 
 
