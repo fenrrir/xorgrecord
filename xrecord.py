@@ -1,3 +1,38 @@
+# Copyright (C) 2008 Rodrigo Pinheiro Marques de Araujo
+#
+# This program is free software; you can redistribute it and/or modify it under
+# the terms of the GNU General Public License as published by the Free Software
+# Foundation; either version 2 of the License, or (at your option) any later
+# version.
+#
+# This program is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+# FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+# details.
+#
+# You should have received a copy of the GNU General Public License along with
+# this program; if not, write to the Free Software Foundation, Inc., 51
+# Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+
+
+
+license = """ Copyright (C) 2008 Rodrigo Pinheiro Marques de Araujo
+
+ This program is free software; you can redistribute it and/or modify it under
+ the terms of the GNU General Public License as published by the Free Software
+ Foundation; either version 2 of the License, or (at your option) any later
+ version.
+
+ This program is distributed in the hope that it will be useful, but WITHOUT
+ ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS
+ FOR A PARTICULAR PURPOSE. See the GNU General Public License for more
+ details.
+
+ You should have received a copy of the GNU General Public License along with
+ this program; if not, write to the Free Software Foundation, Inc., 51
+ Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA."""
+
+
 import gtk
 from play import play_events, stop_events, FileFormatError
 from record import record_events, stop_record, save_buffer, load_file
@@ -12,7 +47,6 @@ class App(object):
     def __init__(self):
         self.setup_icon()
         self.load_menu()
-        self.setup_about()
         self.file_load = None
 
 
@@ -110,8 +144,7 @@ class App(object):
         elif item == "LEV":
             self.load_events()
         elif item == "About":
-            self.about.run()
-            self.about.destroy()
+            self.show_about()
         else:
             stop_record()
             stop_events()
@@ -128,16 +161,18 @@ class App(object):
         notification.show()
 
 
-    def setup_about(self):
+    def show_about(self):
         self.about = gtk.AboutDialog()
         self.about.set_name("Xrecord")
-        self.about.set_version("0.1-alpha")
+        self.about.set_version("0.1")
         self.about.set_comments("Grava e reproduz eventos do X")
-        self.about.set_copyright("Rodrigo Pinheiro Marques de Araujo")
+        self.about.set_copyright("Copyright (C) 2008 Rodrigo Pinheiro Marques de Araujo")
         self.about.set_authors(["Rodrigo Pinheiro Marques de Araujo"])
-        self.about.set_license("GPL v3")
+        self.about.set_license(license)
         self.about.set_program_name("Xrecord")
         self.about.set_website("http://linil.wordpress.com")
+        self.about.run()
+        self.about.destroy()
 
 
     def overwrite_file(self, path):
