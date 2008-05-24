@@ -1,6 +1,7 @@
 import gtk
 from play import play_events, stop_events
 from record import record_events, stop_record, save_buffer, load_file
+import os
 import thread
 
 
@@ -71,9 +72,9 @@ class App(object):
         elif item == "STE":
             stop_events()
         elif item == "SEV":
-            save_buffer()
+            self.save_events()
         elif item == "LEV":
-            load_file()
+            self.load_events()
         elif item == "About":
             self.about.run()
             self.about.destroy()
@@ -94,6 +95,50 @@ class App(object):
         self.about.set_program_name("Xrecord")
         self.about.set_website("http://linil.wordpress.com")
 
+    def overwrite_file(self, path):
+        msg = "Overwrite %s?" % path
+        dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_YES_NO, msg)
+        response = dialog.run()
+        dialog.destroy()
+        return response == gtk.RESPONSE_YES
+
+    def save_events(self):
+        filechooser = gtk.FileChooserDialog("Save...", 
+                                            None, 
+                                            gtk.FILE_CHOOSER_ACTION_SAVE, 
+                                            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, 
+                                            gtk.STOCK_SAVE, gtk.RESPONSE_OK))
+
+        filechooser.set_default_response(gtk.RESPONSE_OK)
+
+        path = None
+
+        while True:
+            response = filechooser.run()
+
+            if response != gtk.RESPONSE_OK:
+                path = None
+                break
+
+            path = filechooser.get_filename()
+
+            if os.path.exists(path):
+                if not self.overwrite_file(path):
+                    continue
+
+            if path != None:
+                try:
+                    save_buffer(path)
+                    break
+                except IOError:
+                    dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Permission denied!")
+                    dialog.run()
+                    dialog.destroy()
+
+        
+        filechooser.destroy()
+
+ 
 
     def popup_menu(self, widget, button, ctime):
         self.menu.popup(None, None, gtk.status_icon_position_menu, button, ctime, widget)
