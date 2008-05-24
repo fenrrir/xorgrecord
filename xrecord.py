@@ -9,6 +9,7 @@ class App(object):
 
     def __init__(self):
         self.load_menu()
+        self.setup_about()
 
 
     def load_menu(self):
@@ -31,6 +32,12 @@ class App(object):
 
         load_events = gtk.MenuItem("Load events")
         load_events.connect('activate', self.menu_item_callback, "LEV")
+        
+        about = gtk.MenuItem("About")
+        about.connect('activate', self.menu_item_callback, "About")
+
+        exit = gtk.MenuItem("Exit")
+        exit.connect('activate', self.menu_item_callback, "Exit")
 
         self.menu.append(start_record)
         self.menu.append(stop_record)
@@ -43,6 +50,10 @@ class App(object):
         self.menu.append(start_events)
         self.menu.append(stop_events)
         self.menu.append(gtk.SeparatorMenuItem())
+
+        self.menu.append(about)
+        self.menu.append(exit)
+
         self.menu.show_all()
 
 
@@ -57,8 +68,31 @@ class App(object):
             gtk.gdk.threads_init()
             play_events()
             gtk.gdk.threads_leave()
-        else:
+        elif item == "STE":
             stop_events()
+        elif item == "SEV":
+            save_buffer()
+        elif item == "LEV":
+            load_file()
+        elif item == "About":
+            self.about.run()
+            self.about.destroy()
+        else:
+            stop_record()
+            stop_events()
+            gtk.main_quit()
+
+
+    def setup_about(self):
+        self.about = gtk.AboutDialog()
+        self.about.set_name("Xrecord")
+        self.about.set_version("0.1-alpha")
+        self.about.set_comments("Grava e reproduz eventos do X")
+        self.about.set_copyright("Rodrigo Pinheiro Marques de Araujo")
+        self.about.set_authors(["Rodrigo Pinheiro Marques de Araujo"])
+        self.about.set_license("GPL v3")
+        self.about.set_program_name("Xrecord")
+        self.about.set_website("http://linil.wordpress.com")
 
 
     def popup_menu(self, widget, button, ctime):
