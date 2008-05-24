@@ -102,6 +102,33 @@ class App(object):
         dialog.destroy()
         return response == gtk.RESPONSE_YES
 
+
+    def load_events(self):
+        filechooser = gtk.FileChooserDialog("Load...", 
+                                            None, 
+                                            gtk.FILE_CHOOSER_ACTION_OPEN, 
+                                            (gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL, 
+                                            gtk.STOCK_OPEN, gtk.RESPONSE_OK))
+
+        filechooser.set_default_response(gtk.RESPONSE_OK)
+
+        while True:
+
+            response = filechooser.run()
+
+            if response == gtk.RESPONSE_OK:
+                path = filechooser.get_filename()
+                try:
+                    load_file(path)
+                    break
+                except IOError:
+                    dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Permission denied!")
+                    dialog.run()
+                    dialog.destroy()
+            else:
+                break
+        filechooser.destroy()
+
     def save_events(self):
         filechooser = gtk.FileChooserDialog("Save...", 
                                             None, 
