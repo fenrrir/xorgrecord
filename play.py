@@ -6,7 +6,7 @@ import Xlib.error
 import Xlib.ext.xtest
 import sys
 from time import sleep
-from record import buffer
+import record
 
 display = Xlib.display.Display()
 
@@ -50,7 +50,6 @@ def stop_events():
 
 def play_events():
     global _global_stop
-    print buffer
 
     functions = {}
     functions["ButtonPress"] = mouse_press
@@ -59,7 +58,7 @@ def play_events():
     functions["KeyStrRelease"] = key_release
     functions["KeyStrPress"] = key_press
     functions["Sleep"] = my_sleep
-    for items in buffer:
+    for items in record.buffer:
         if _global_stop:
             _global_stop = False
             break
