@@ -83,7 +83,6 @@ def stop_record():
 
 def record_callback(reply):
     global _global_stop
-    print "event"
 
     if reply.category != record.FromServer:
         return
@@ -135,7 +134,6 @@ def record_events():
     global _global_ctx, buffer, _global_time
     _global_time = None
     buffer = []
-    print "na thread"
     # Create a recording context; we only want key and mouse events
     _global_ctx = record_dpy.record_create_context(
             0,
