@@ -54,7 +54,9 @@ class App(object):
         elif item == "STR":
             stop_record()
         elif item == "SRE":
+            gtk.gdk.threads_init()
             play_events()
+            gtk.gdk.threads_leave()
         else:
             stop_events()
 
