@@ -34,8 +34,7 @@ license = """ Copyright (C) 2008 Rodrigo Pinheiro Marques de Araujo
 
 
 import gtk
-from play import play_events, stop_events, FileFormatError
-from record import record_events, stop_record, save_buffer, load_file
+from events import EventRepeater, EventRecorder 
 import os
 import thread
 import pynotify
@@ -48,6 +47,8 @@ class App(object):
         self.setup_icon()
         self.load_menu()
         self.file_load = None
+        self.recorder = EventRecorder()
+        self.repeater = EventRepeater()
 
 
     def setup_icon(self):
@@ -127,27 +128,28 @@ class App(object):
 
 
     def menu_item_callback(self, widget, item):
-        if item ==  "SRR":
+        if item ==  "SRR": # start record
             gtk.gdk.threads_init()
-            thread.start_new_thread(record_events, ())
+            thread.start_new_thread(self.recorder.record_events, ())
             gtk.gdk.threads_leave()
-        elif item == "STR":
-            stop_record()
-        elif item == "SRE":
+        elif item == "STR": # stop record
+            self.recorder.stop = True
+        elif item == "SRE": # start repeater
+            self.repeater.buffer = self.recorder.buffer
             gtk.gdk.threads_init()
-            thread.start_new_thread(play_events, (self.show_notify_error,))
+            thread.start_new_thread(self.repeater.play_events, (self.show_notify_error,))
             gtk.gdk.threads_leave()
-        elif item == "STE":
-            stop_events()
-        elif item == "SEV":
+        elif item == "STE": # stop repeater
+            self.repeater.stop = True
+        elif item == "SEV": # save events
             self.save_events()
-        elif item == "LEV":
+        elif item == "LEV": # load events
             self.load_events()
         elif item == "About":
             self.show_about()
         else:
-            stop_record()
-            stop_events()
+            self.recorder.stop = True
+            self.repeater.stop = True
             gtk.main_quit()
 
 
@@ -200,11 +202,15 @@ class App(object):
             if response == gtk.RESPONSE_OK:
                 path = filechooser.get_filename()
                 try:
-                    load_file(path)
+                    self.recorder.load_file(path)
                     self.file_load = path
                     break
                 except IOError:
-                    dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Permission denied!")
+                    dialog = gtk.MessageDialog(None, 
+                                                0, 
+                                                gtk.MESSAGE_ERROR, 
+                                                gtk.BUTTONS_OK, 
+                                                "Permission denied!")
                     dialog.run()
                     dialog.destroy()
             else:
@@ -238,10 +244,14 @@ class App(object):
 
             if path != None:
                 try:
-                    save_buffer(path)
+                    self.recorder.save_buffer(path)
                     break
                 except IOError:
-                    dialog = gtk.MessageDialog(None, 0, gtk.MESSAGE_ERROR, gtk.BUTTONS_OK, "Permission denied!")
+                    dialog = gtk.MessageDialog(None, 
+                                                0, 
+                                                gtk.MESSAGE_ERROR, 
+                                                gtk.BUTTONS_OK, 
+                                                "Permission denied!")
                     dialog.run()
                     dialog.destroy()
 
@@ -251,7 +261,9 @@ class App(object):
  
 
     def popup_menu(self, widget, button, ctime):
-        self.menu.popup(None, None, gtk.status_icon_position_menu, button, ctime, widget)
+        self.menu.popup(None, None, 
+                        gtk.status_icon_position_menu, 
+                        button, ctime, widget)
 
     def run(self):
         pynotify.init("XorgRecord")
